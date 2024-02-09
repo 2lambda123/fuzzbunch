@@ -2,7 +2,7 @@
 import ops.cmd
 import dsz.version, dsz.path, dsz.control, dsz.lp
 import sys
-from xml.dom import minidom
+import defusedxml.minidom
 
 def main():
     found = False
@@ -49,7 +49,7 @@ def decrypt(encpass):
     return clean_res
 
 def parsexml(xmlstring):
-    data = minidom.parseString(xmlstring)
+    data = defusedxml.minidom.parseString(xmlstring)
     userdata = data.getElementsByTagName('User')
     properties = data.getElementsByTagName('Properties')
     for i in xrange(0, len(userdata)):

@@ -9,12 +9,12 @@ NOTE: Values pulled from XML are 'unicode' by default. The rest of FB prefers
 'str' types.
 
 """
-from xml.etree import ElementTree
-import xml.dom.minidom
 import util
 import xml.parsers.expat as expat
 import exception
 import re
+import defusedxml.ElementTree
+import defusedxml.minidom
 
 
 __all__ = ['parse_consolemode',
@@ -56,7 +56,7 @@ def parse_consolemode(xmlFile):
     """
     
     try:
-        xmlDocument = xml.dom.minidom.parse(xmlFile)
+        xmlDocument = defusedxml.minidom.parse(xmlFile)
         elem = get_elements(xmlDocument, "consolemode")[0]          # Fix to Bug #574
         #elem = xmlDocument.getElementsByTagName("t:consolemode")[0]
         return str(elem.getAttribute("value"))
@@ -111,7 +111,7 @@ def parse_touchlist(xmlFile):
                  }
     """
     try:
-        xmlDocument = xml.dom.minidom.parse(xmlFile)
+        xmlDocument = defusedxml.minidom.parse(xmlFile)
         tlist = get_elements(xmlDocument, "touchlist")[0]       # Fix to bug #574
     except expat.ExpatError:
         # The XML failed to parse correctly
@@ -199,7 +199,7 @@ def parse_redirection(xmlFile):
         return [child for child in node
                       if nsstrip(child.tag) == 'local']
 
-    xmldoc = ElementTree.parse(xmlFile)
+    xmldoc = defusedxml.ElementTree.parse(xmlFile)
     config = xmldoc.getroot()
     redir = get_redirection(config)         # Redirection section of the plug-in XML
 
@@ -236,7 +236,7 @@ def parse_iparamorder(xmlFile):
     List of parameter names in display order
     """
 
-    xmlDocument = xml.dom.minidom.parse(xmlFile)
+    xmlDocument = defusedxml.minidom.parse(xmlFile)
 
     try:
         #iparams = xmlDocument.getElementsByTagName("t:inputparameters")[0]
@@ -267,7 +267,7 @@ def parse_forward(xmlFile):
     Dictionary mapping archOs tag (e.g., "x86-Windows") to a tuple containing
     plugin proxy and core DLLs.  Note that either element may be None!
     """
-    xmldoc = ElementTree.parse(xmlFile)
+    xmldoc = defusedxml.ElementTree.parse(xmlFile)
     arches = {}
     for arch in xmldoc.findall("package/arch"):
         proxy = getattr(arch.find('base'), 'text', None)
