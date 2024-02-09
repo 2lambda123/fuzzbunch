@@ -1,11 +1,12 @@
 
-import xml.etree
 import os.path
 import ops
 from util.DSZPyLogger import getLogger, WARNING
 from ops.psp.actions import PSPManager, RegQueryAction, DirListAction, DoNotAction, ScriptAction, SafetyCheckAction
 from ops.ActionFramework import XMLConditionalActionDataSource, ActionManager, XMLAttributeActionDataSource
 import dsz.ui
+import defusedxml.ElementTree
+
 psplog = getLogger('genericPSP')
 psplog.setFileLogLevel(WARNING)
 xmltoattributemap = {'regkey': RegQueryAction, 'directory': DirListAction}
@@ -23,7 +24,7 @@ def main(vendor):
     if (not os.path.exists(fpfile)):
         return None
     with open(fpfile, 'r') as fd:
-        xmldata = xml.etree.ElementTree.parse(fd).getroot()
+        xmldata = defusedxml.ElementTree.parse(fd).getroot()
     atpkgs = XMLAttributeActionDataSource(xmldata, xmltoattributemap).GetRootActions()
     pspmgr = PSPManager()
     for atpkg in atpkgs:
@@ -42,7 +43,7 @@ def main(vendor):
     actfile = findActions(vendor)
     if os.path.exists(actfile):
         with open(actfile, 'r') as fd:
-            xmldata = xml.etree.ElementTree.parse(fd).getroot()
+            xmldata = defusedxml.ElementTree.parse(fd).getroot()
         actmgr = ActionManager(XMLConditionalActionDataSource(xmldata, xmltoactionmap, psps).GetRootActions())
         fails = actmgr.Validate()
         if (len(fails) == 0):

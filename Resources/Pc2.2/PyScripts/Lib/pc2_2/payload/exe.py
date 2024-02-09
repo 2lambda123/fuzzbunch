@@ -10,7 +10,7 @@ import os
 import os.path
 import re
 import shutil
-import xml.dom.minidom
+import defusedxml.minidom
 
 #-----------------------------------------------------------------------------------------
 def ConfigBinary(path, file, keyLocation, extraInfo, type):
@@ -65,7 +65,7 @@ def _configureWithFC(path, file, keyLocation, extraInfo):
 	# Store the current version PeddleCheap	
 	version=""
 	try:
-		dom1 = xml.dom.minidom.parse("%s/Pc2.2/Version.xml" % toolLoc)
+		dom1 = defusedxml.minidom.parse("%s/Pc2.2/Version.xml" % toolLoc)
 		element = dom1.getElementsByTagName("Version")
 		
 		major = element[0].getAttribute("major")

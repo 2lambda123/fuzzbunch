@@ -3,9 +3,10 @@ import datetime
 import os.path
 import subprocess
 import time
-import xml.etree.ElementTree
 import dsz
 import ops
+import defusedxml.ElementTree
+
 XALAN = os.path.join(ops.RESDIR, 'ExternalLibraries', 'java-j2se_1.6-sun', 'xalan.jar')
 STYLESHEET = os.path.join(ops.DATA, 'DszErrorExtractor.xsl')
 
@@ -59,7 +60,7 @@ def getErrorFromCommandId(cmdid):
 
 def _parseXML(fullpath, cmdid):
     xsltoutput = subprocess.Popen(['javaw', '-jar', XALAN, '-in', fullpath, '-xsl', STYLESHEET], stdout=subprocess.PIPE).communicate()[0]
-    tree = xml.etree.ElementTree.fromstring(xsltoutput)
+    tree = defusedxml.ElementTree.fromstring(xsltoutput)
     if (not tree.get('timestamp')):
         return DszCommandError(timestamp='', data=[], cmdid=cmdid)
     timestamp = datetime.datetime(*time.strptime(tree.get('timestamp'), '%Y-%m-%dT%H:%M:%S')[0:6])

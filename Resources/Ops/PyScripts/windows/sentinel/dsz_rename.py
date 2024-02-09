@@ -3,7 +3,8 @@ import sys
 import glob
 import os
 import shutil
-from xml.etree import ElementTree
+import defusedxml.ElementTree
+
 DSZ_NS = '{urn:mca:db00db84-8b5b-2141-a632b5980175d3c6}'
 DATALOG_TAG = ('%sDataLog' % DSZ_NS)
 COMMANDDATA_TAG = ('%sCommandData' % DSZ_NS)
@@ -26,7 +27,7 @@ def main(file_to_read, output_dir):
     for get_file in all_gets:
         base_name = os.path.basename(get_file)
         task_id = base_name.split('-')[0]
-        tree = ElementTree.parse(get_file)
+        tree = defusedxml.ElementTree.parse(get_file)
         data_log = tree.getiterator(DATALOG_TAG)[0]
         command_data = data_log.find(COMMANDDATA_TAG)
         file_start = command_data.find(FILESTART_TAG)
@@ -50,7 +51,7 @@ def main(file_to_read, output_dir):
 
 def is_completed_result(file_to_parse):
     try:
-        tree = ElementTree.parse(file_to_parse)
+        tree = defusedxml.ElementTree.parse(file_to_parse)
         data_log = tree.getiterator(DATALOG_TAG)[0]
         command_data = data_log.find(COMMANDDATA_TAG)
         task_result = command_data.find(TASKRESULT_TAG)
