@@ -13,12 +13,50 @@ xmltoattributemap = {'regkey': RegQueryAction, 'directory': DirListAction}
 xmltoactionmap = {'donot': DoNotAction, 'script': ScriptAction, 'safetycheck': SafetyCheckAction}
 
 def findConfig(vendor):
+    """This function returns the path to the configuration file for a given vendor.
+    Parameters:
+        - vendor (str): The name of the vendor whose configuration file is being searched for.
+    Returns:
+        - str: The path to the configuration file for the given vendor.
+    Processing Logic:
+        - Joins the vendor name with the file name and the path to the data directory.
+        - Uses the .format() method to insert the vendor name into the file name.
+        - Returns the full path to the configuration file."""
+    
     return os.path.join(ops.DATA, 'pspFPs', '{0}-fp.xml'.format(vendor))
 
 def findActions(vendor):
+    """Function to find the actions.xml file for a given vendor.
+    Parameters:
+        - vendor (str): Name of the vendor.
+    Returns:
+        - str: Path to the actions.xml file for the given vendor.
+    Processing Logic:
+        - Joins the vendor name with the 'pspFPs' and 'actions.xml' strings.
+        - Uses the os.path.join() function to create a valid file path.
+        - Returns the file path as a string."""
+    
     return os.path.join(ops.DATA, 'pspFPs', '{0}-actions.xml'.format(vendor))
 
 def main(vendor):
+    """"Executes actions for a given vendor and returns a list of PSPs associated with that vendor.
+    Parameters:
+        - vendor (str): The name of the vendor to search for.
+    Returns:
+        - psps (list): A list of PSP objects associated with the given vendor.
+    Processing Logic:
+        - Searches for the config file for the given vendor.
+        - If the config file does not exist, returns None.
+        - Parses the config file and retrieves the root actions.
+        - Uses the PSPManager class to add the vendor and execute the actions.
+        - If the PSPManager is valid, retrieves all PSPs associated with the vendor.
+        - If the PSPManager is not valid, logs an error and returns None.
+        - Searches for the action file for the given vendor.
+        - If the action file exists, parses it and retrieves the root actions.
+        - Uses the ActionManager class to validate and execute the actions.
+        - If the ActionManager fails to validate, logs an error and returns None.
+        - If no PSPs are found, logs a message and returns None.""""
+    
     psps = []
     fpfile = findConfig(vendor)
     if (not os.path.exists(fpfile)):

