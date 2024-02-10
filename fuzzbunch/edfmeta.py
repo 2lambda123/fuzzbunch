@@ -25,6 +25,17 @@ __all__ = ['parse_consolemode',
 
 
 def get_elements(xmlDoc, tag):
+    """"Returns a list of elements from the given XML document that match the specified tag. If no elements are found, an empty list is returned."
+    Parameters:
+        - xmlDoc (xml.dom.minidom.Document): The XML document to search for elements.
+        - tag (str): The tag to match elements against.
+    Returns:
+        - list: A list of elements that match the specified tag.
+    Processing Logic:
+        - Searches for elements using the getElementsByTagName method.
+        - If no elements are found, it tries again using the "t:" prefix.
+        - If an error occurs, an empty list is returned."""
+    
     try:
         elements = xmlDoc.getElementsByTagName(tag)
         if len(elements) == 0:

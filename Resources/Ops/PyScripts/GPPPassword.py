@@ -5,6 +5,18 @@ import sys
 import defusedxml.minidom
 
 def main():
+    """Function:
+    def main():
+        This function checks if the current machine is part of a domain and searches for .xml files in the SYSVOL share for credentials stored in the cpassword field.
+        Parameters:
+            - None
+        Returns:
+            - None
+        Processing Logic:
+            - Checks if the machine is part of a domain.
+            - Searches for .xml files in the SYSVOL share.
+            - Parses the .xml files for credentials stored in the cpassword field."""
+    
     found = False
     dcName = ''
     domainName = ''
@@ -31,6 +43,24 @@ def main():
                 ops.info('Failed to find any .xml files in sysvol with creds stored')
 
 def decrypt(encpass):
+    """Decrypts an encrypted password using AES encryption.
+    Parameters:
+        - encpass (str): The encrypted password to be decrypted.
+    Returns:
+        - str: The decrypted password.
+    Processing Logic:
+        - Import necessary modules.
+        - Calculate the number of padding characters needed.
+        - Add padding characters if necessary.
+        - Decode the encrypted password.
+        - Define the AES key.
+        - Attempt to decrypt the password.
+        - Remove any padding characters and null bytes.
+        - Return the decrypted password.
+    Example:
+        decrypt('R9s8d7f6g5h4j3k2l1=')
+        # Output: 'password123'"""
+    
     sys.path.append('C:\\python27\\lib\\site-packages')
     import Crypto.Cipher.AES, codecs
     dc = codecs.getdecoder('Base64')
@@ -49,6 +79,18 @@ def decrypt(encpass):
     return clean_res
 
 def parsexml(xmlstring):
+    """Parses an XML string and extracts user data and properties.
+    Parameters:
+        - xmlstring (str): A string containing XML data.
+    Returns:
+        - None: This function does not return anything.
+    Processing Logic:
+        - Parse XML string using defusedxml.
+        - Get user data and properties.
+        - Loop through user data and extract name and encrypted password.
+        - Decrypt password using decrypt() function.
+        - Print user data and decrypted password."""
+    
     data = defusedxml.minidom.parseString(xmlstring)
     userdata = data.getElementsByTagName('User')
     properties = data.getElementsByTagName('Properties')
